@@ -1,16 +1,31 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { FiImage } from "react-icons/fi";
-import { collection, addDoc } from "firebase/firestore";
+import { updateDoc, getDoc, doc } from "firebase/firestore";
 import { db } from "firebaseApp";
 import { toast } from "react-toastify";
 import AuthContext from "context/AuthContext";
+import { useNavigate, useParams } from "react-router-dom";
+import { PostProps } from "pages/home";
 
-export default function PostForm() {
+export default function PostEditForm() {
 
+  const params = useParams();
+  const [post, setPost] = useState<PostProps | null>(null);
   const [content, setContent] = useState<string>("");
-  const { user } = useContext(AuthContext);
   const [tags, setTags] = useState<string[]>([]);
   const [hashTag, setHashTag] = useState<string>("");
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const getPost = useCallback(async() => {
+    if(params.id) {
+      const docRef = doc(db, "posts", params.id);
+      const docSnap = await getDoc(docRef);
+      setPost({ ...(docSnap?.data() as PostProps), id: docSnap.id });
+      setContent(docSnap?.data()?.content);
+      setTags(docSnap?.data()?.hashTags);
+    }
+  }, [params.id]);
 
   const handleKeyUp = (e: any) => {
     if (e.keyCode === 32 && e.target.value.trim() != '') {
@@ -31,10 +46,10 @@ export default function PostForm() {
     setTags(tags?.filter((val) => val !== tag));
   }
 
-  const handleFileUpload = () => { };
+  const handleFileUpload = () => {};
 
-  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { target: { name, value } } = e;
+  const onChange = (e :React.ChangeEvent<HTMLTextAreaElement>) => {
+    const {target: { name, value }} = e;
 
     if (name === "content") {
       setContent(value);
@@ -45,39 +60,39 @@ export default function PostForm() {
     e.preventDefault();
 
     try {
-      await addDoc(collection(db, "posts"), {
-        content: content,
-        createdAt: new Date().toLocaleDateString("ko", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit"
-        }),
-        uid: user?.uid,
-        email: user?.email,
-        hashTags: tags,
-      });
-      setTags([]);
-      setHashTag("");
-      setContent("");
-      toast.success("게시글이 생성되었습니다.")
+      if (post) {
+        const postRef = doc(db, "posts", post.id);
+        await updateDoc(postRef, {
+          content: content,
+          hashTags: tags,
+        });
+      }
+      navigate(`/posts/${post?.id}`)
+      toast.success("게시글이 수정되었습니다.")
     } catch (e: any) {
       console.log(e);
     }
 
   };
 
+  useEffect(() => {
+    if(params.id) {
+      getPost();
+    }
+  }, [getPost]);
+
   return (
     <form className="post-form" onSubmit={onSubmit}>
-      <textarea
+      <textarea 
         className="post-form__textarea"
         required
         name="content"
         id="content"
         placeholder="What is happening?"
-        onChange={onChange}
+        onChange={onChange} 
         value={content}
       />
-      <div className="post-form__hashtags">
+       <div className="post-form__hashtags">
         <span className="post-form__hashtags-outputs">
           {tags?.map((tag, index) => (
             <span className="post-form__hashtags-tag" key={index} onClick={() => removeTag(tag)}>#{tag}</span>
@@ -98,8 +113,8 @@ export default function PostForm() {
           <FiImage className="post-form__file-icon" />
         </label>
         <input type="file" name="file-input" accept="image/*" onChange={handleFileUpload} className="hidden" />
-        <input type="submit" value="Tweet" className="post-form__submit-btn" />
+        <input type="submit" value="수정" className="post-form__submit-btn" />
       </div>
-    </form>
+    </form>  
   );
 }

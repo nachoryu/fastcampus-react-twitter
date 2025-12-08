@@ -3,6 +3,7 @@ $font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
   sans-serif;
 
 $background: #1e293b;
+$backgroundLight: #263340;
 $activeBg: #3c495f5f;
 $white: #ffffff;
 $border: #708090;
@@ -36,6 +37,20 @@ body {
   min-height: 100vh;
 }
 
+.transparent {
+  background-color: transparent;
+  backdrop-filter: blur(10px);
+}
+
+.sticky {
+  width: 100%;
+  position: sticky;
+  max-width: 600px;
+  margin: 0 auto;
+  top: 0;
+}
+
+
 .button {
   padding: 0.2rem 0.8rem;
   border-radius: 999px; 
@@ -61,7 +76,7 @@ body {
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     background-color: transparent;
     
     button {
@@ -82,19 +97,50 @@ body {
 
 // home 레이아웃
 .home {
+
+  &__search-div {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__search {
+    @extend .post-form__input;
+    background-color: $backgroundLight;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    padding: 12px;
+    width: 90% !important;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:hover, &:focus {
+      border: 1px solid $primaryColor;
+      background-color: $activeBg;
+    }
+  }
+
+  &__top {
+    @extend .sticky;
+    @extend .transparent;
+  }
+
   &__title {
+    background-color: transparent;
+    width: 90%;
     padding: 16px;
-    font-wieght: 700;
+    font-weight: 700;
     font-size: 20px;
   }
 
   &__tabs {
+    background-color: transparent;
     width: 100%;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   &__tab {
+    background-color: transparent;
     text-align: center;
     font-weight: 500;
     padding: 16px;
@@ -112,6 +158,43 @@ body {
 }
 
 .post-form {
+  &__input{
+    font-family: $font;
+    padding: 8px;
+    border: none;
+    resize: none;
+    outline: none;
+    margin-top: 8px;
+    width: calc(100% - 32px);
+  }
+
+  &__hashtags {
+    padding:16px;
+    border-bottom: 1px solid $border;
+
+    &-outputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 1px;
+      align-items: center;
+    }
+
+    &-tag {
+      font-size: 14px;
+      border: 1px solid $primaryColor;
+      color: $primaryColor;
+      border-radius: 10px;
+      padding: 2px 8px;
+      margin-right: 6px;
+      cursor: pointer;
+
+      &:hover, &:focus {
+        color: $activeBorder;
+        border: 1px solid $activeBorder;
+      }
+    }
+  }
+
   &__textarea {
     font-family: $font;
     min-height: 120px;
@@ -159,6 +242,30 @@ body {
 
 // 포스트 레이아웃
 .post {
+  &__header {
+    button {
+      border: none;
+      padding: 16px;
+    }
+
+    &-btn {
+      width: 20px;
+      height: 20px;
+      cursor: pointer
+    }
+  }
+
+  &__no-posts {
+    padding: 16px;
+
+    .post__text {
+      font-size: 14px;
+      border: 1px solid $gray;
+      padding: 16px;
+      border-radius: 4px;
+    }
+  }
+
   padding-bottom: 40px;
 
   &__flex {
@@ -247,4 +354,99 @@ body {
     }
   }
   
+}
+
+// form 레이아웃
+.form {
+  margin: 0 auto;
+  max-width: 680px;
+  padding: 20px;
+
+  input {
+    height: 20px;
+    padding: 10px;
+    border-radius: 0.3rem;
+    border: 1px solid lightgray;
+    width: 96%;
+    max-width: 680px;
+  }
+
+  &__block {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  &__block--lg {
+    margin-top: 28px;
+    width: 100%
+  }
+
+  label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  &__btn--submit {
+    @extend .button;
+    width: 100%;
+    height: 48px;
+    font-weight: 600;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 auto;
+    color: white;
+    background-color: $primaryColor;
+  
+    &:focus, &:hover {
+      background-color: $activeBorder;  
+    }
+  }
+
+  &__title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    padding-bottom: 20px;
+  }
+
+  &__link {
+    margin-left: 10px;
+    text-decoration: none;
+    color: $grayText;
+
+    &:hover, &:focus {
+      color: gray;
+    }
+  }
+
+  &__error {
+    color: red
+  }
+
+  &__btn--google {
+    @extend .form__btn--submit;
+    background-color: $white;
+    color: $activeBorder;
+
+    &:hover, &:focus {
+      background-color: $activeBorder;
+      color: $white;
+    }
+  }
+
+  &__btn--github {
+    @extend .form__btn--submit;
+    background-color: black;
+    color: white;
+
+    &:hover, &:focus {
+      background-color: $activeBg;
+      color: $white;
+    }
+  }
+
+
 }
