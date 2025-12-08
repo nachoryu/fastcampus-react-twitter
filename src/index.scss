@@ -59,6 +59,11 @@ body {
   font-weight: 600;
   border: none;
   box-shadow: 0 1px 2px 0 rgba (0, 0, 0, 0.05);
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 // footer 레이아웃
@@ -76,7 +81,7 @@ body {
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     background-color: transparent;
     
     button {
@@ -272,8 +277,36 @@ body {
     display: flex;
     gap: 4px;
     align-items: center;
+
+    &--between {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+    }
   }
 
+  &__following-btn {
+    @extend .button;
+    background-color: $activeBorder;
+    color: $white;
+
+    &:hover, &:focus {
+      background-color: $white; 
+      color: $activeBorder; 
+    }
+  }
+
+  &__follow-btn {
+    @extend .button;
+    background-color: $white;
+    color: $activeBorder;
+
+    &:hover, &:focus {
+      background-color: $activeBorder; 
+      color: $white; 
+    }
+  }
+  
   &__email,
   &__createdAt {
     font-size: 12px;
